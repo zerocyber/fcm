@@ -32,6 +32,13 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+                    <div id="received_message_div" style="display: none;">
+                        <h4>받은 메시지 정보</h4>
+                        <p id="received_message" style="word-break: break-all;"></p>
+                    </div>
+                </div>
         </main>
     </div>
 
@@ -39,19 +46,31 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-messaging.js"></script>
     <script>
-        // Your Vapid key
-        const vapidKey = 'Your Vapid Key';
+        // firebasee App 실행에 필요한 기본 값 설정
+        // 본인의 firebase 프로젝트 설정값으로 변경 후 사용
+        const vapidKey = 'BOnE6_GAN9lhR7Sj_sZo9X4s6bqGkJknn8lNJMWJ5e5Ynu8EI6GicfHeizfAqcwzKNdGcfqmGi3rEl3_KwnGpi0';
         const firebaseConfig = {
-            apiKey: "Your API key",
-            authDomain: "Your authDomain",
-            projectId: "Your Project ID",
-            storageBucket: "Your storageBucket",
-            messagingSenderId: "Your messagingSenderId",
-            appId: "Your appId",
-            measurementId: "Your measurementId",
+            apiKey: "AIzaSyCPlrxiAmvq-g7lNIFcsREKWnyLk2Cwhxw",
+            authDomain: "p2p-dev-6b7c1.firebaseapp.com",
+            projectId: "p2p-dev-6b7c1",
+            storageBucket: "p2p-dev-6b7c1.appspot.com",
+            messagingSenderId: "934085220942",
+            appId: "1:934085220942:web:de68eb2cc4854bd828c11f",
+            measurementId: "G-XWH557P65Q"
         };
 
-        // Initialize Firebase
+        // const vapidKey = 'Your Vapid Key';
+        // const firebaseConfig = {
+        //     apiKey: "Your API key",
+        //     authDomain: "Your authDomain",
+        //     projectId: "Your Project ID",
+        //     storageBucket: "Your storageBucket",
+        //     messagingSenderId: "Your messagingSenderId",
+        //     appId: "Your appId",
+        //     measurementId: "Your measurementId",
+        // };
+
+        // 클라이언트 firebasee App 실행
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
 
@@ -60,11 +79,24 @@
         messaging.getToken({ vapidKey: vapidKey }).then((currentToken) => {
             if (currentToken) { // 토큰을 정상적으로 발급받은 경우
                 console.log('Token exist.');
+                document.getElementById('token').innerText = currentToken;
+                document.getElementById('token_div').style.display = 'block';
             } else { // 토큰을 발급받지 못한 경우
                 console.log('No registration token available. Request permission to generate one.');
             }
         }).catch((err) => { // 토큰 요청 에러
             console.error('An error occurred while retrieving token. ', err);
+        });
+
+        // 앱이 foreground 상태일 때 메시지 처리
+        messaging.onMessage((payload) => 
+        {
+            console.log('Message received. ', payload);
+            
+            // 받은 push 메시지 정보를 화면에 출력
+            document.getElementById('received_message').innerText = JSON.stringify(payload);
+            document.getElementById('received_message_div').style.display = 'block';
+
         });
 
     </script>
